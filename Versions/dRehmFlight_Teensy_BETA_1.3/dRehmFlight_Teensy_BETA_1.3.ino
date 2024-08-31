@@ -168,12 +168,12 @@ float MagScaleY = 1.0;
 float MagScaleZ = 1.0;
 
 //IMU calibration parameters - calibrate IMU using calculate_IMU_error() in the void setup() to get these values, then comment out calculate_IMU_error()
-float AccErrorX = 0.0;
-float AccErrorY = 0.0;
-float AccErrorZ = 0.0;
-float GyroErrorX = 0.0;
-float GyroErrorY= 0.0;
-float GyroErrorZ = 0.0;
+float AccErrorX = 0.07;
+float AccErrorY = -0.02;
+float AccErrorZ = -0.00;
+float GyroErrorX = -3.58;
+float GyroErrorY = -1.30;
+float GyroErrorZ = -0.25;
 
 //Controller parameters (take note of defaults before modifying!): 
 float i_limit = 25.0;     //Integrator saturation level, mostly for safety (default 25.0)
@@ -471,22 +471,29 @@ void controlMixer() {
    *channel_6_pwm - free auxillary channel, can be used to toggle things with an 'if' statement
    */
    
-  //Quad mixing - EXAMPLE
-  m1_command_scaled = thro_des - pitch_PID + roll_PID + yaw_PID; //Front Left
-  m2_command_scaled = thro_des - pitch_PID - roll_PID - yaw_PID; //Front Right
-  m3_command_scaled = thro_des + pitch_PID - roll_PID + yaw_PID; //Back Right
-  m4_command_scaled = thro_des + pitch_PID + roll_PID - yaw_PID; //Back Left
+  // //Quad mixing - EXAMPLE
+  // m1_command_scaled = thro_des - pitch_PID + roll_PID + yaw_PID; //Front Left
+  // m2_command_scaled = thro_des - pitch_PID - roll_PID - yaw_PID; //Front Right
+  // m3_command_scaled = thro_des + pitch_PID - roll_PID + yaw_PID; //Back Right
+  // m4_command_scaled = thro_des + pitch_PID + roll_PID - yaw_PID; //Back Left
+  // m5_command_scaled = 0;
+  // m6_command_scaled = 0;
+
+  // //0.5 is centered servo, 0.0 is zero throttle if connecting to ESC for conventional PWM, 1.0 is max throttle
+  // s1_command_scaled = 0;
+  // s2_command_scaled = 0;
+  // s3_command_scaled = 0;
+  // s4_command_scaled = 0;
+  // s5_command_scaled = 0;
+  // s6_command_scaled = 0;
+  // s7_command_scaled = 0;
+
+  s1_command_scaled = thro_des - pitch_PID + roll_PID + yaw_PID; //Front Left
+  s2_command_scaled = thro_des - pitch_PID - roll_PID - yaw_PID; //Front Right
+  s3_command_scaled = thro_des + pitch_PID - roll_PID + yaw_PID; //Back Right
+  s4_command_scaled = thro_des + pitch_PID + roll_PID - yaw_PID; //Back Left
   m5_command_scaled = 0;
   m6_command_scaled = 0;
-
-  //0.5 is centered servo, 0.0 is zero throttle if connecting to ESC for conventional PWM, 1.0 is max throttle
-  s1_command_scaled = 0;
-  s2_command_scaled = 0;
-  s3_command_scaled = 0;
-  s4_command_scaled = 0;
-  s5_command_scaled = 0;
-  s6_command_scaled = 0;
-  s7_command_scaled = 0;
  
 }
 
@@ -910,9 +917,9 @@ void getDesState() {
    * (rate mode). yaw_des is scaled to be within max yaw in degrees/sec. Also creates roll_passthru, pitch_passthru, and
    * yaw_passthru variables, to be used in commanding motors/servos with direct unstabilized commands in controlMixer().
    */
-  thro_des = (channel_1_pwm - 1000.0)/1000.0; //Between 0 and 1
-  roll_des = (channel_2_pwm - 1500.0)/500.0; //Between -1 and 1
-  pitch_des = (channel_3_pwm - 1500.0)/500.0; //Between -1 and 1
+  thro_des = (channel_3_pwm - 1000.0)/1000.0; //Between 0 and 1
+  roll_des = (channel_1_pwm - 1500.0)/500.0; //Between -1 and 1
+  pitch_des = (channel_2_pwm - 1500.0)/500.0; //Between -1 and 1
   yaw_des = (channel_4_pwm - 1500.0)/500.0; //Between -1 and 1
   roll_passthru = roll_des/2.0; //Between -0.5 and 0.5
   pitch_passthru = pitch_des/2.0; //Between -0.5 and 0.5
@@ -1465,13 +1472,13 @@ void throttleCut() {
     m6_command_PWM = 120;
 
     //Uncomment if using servo PWM variables to control motor ESCs
-    //s1_command_PWM = 0;
-    //s2_command_PWM = 0;
-    //s3_command_PWM = 0;
-    //s4_command_PWM = 0;
-    //s5_command_PWM = 0;
-    //s6_command_PWM = 0;
-    //s7_command_PWM = 0;
+    s1_command_PWM = 0;
+    s2_command_PWM = 0;
+    s3_command_PWM = 0;
+    s4_command_PWM = 0;
+    s5_command_PWM = 0;
+    s6_command_PWM = 0;
+    s7_command_PWM = 0;
   }
 }
 
